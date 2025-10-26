@@ -1,0 +1,70 @@
+const cityInput = document.getElementById('city-input');
+const searchBtn = document.getElementById('search-btn');
+const weatherInfo = document.getElementById('weather-info');
+const errorMessage = document.getElementById('error-message');
+
+const cityName = document.getElementById('city-name');
+const temperature = document.getElementById('temperature');
+const weatherDesc = document.getElementById('weather-desc');
+const humidity = document.getElementById('humidity');
+const windSpeed = document.getElementById('wind-speed');
+
+// Mock weather data for demonstration
+const mockWeatherData = {
+    "london": { temp: 15, description: "cloudy", humidity: 65, wind: 12 },
+    "paris": { temp: 18, description: "sunny", humidity: 55, wind: 8 },
+    "new york": { temp: 22, description: "partly cloudy", humidity: 60, wind: 10 },
+    "tokyo": { temp: 25, description: "clear sky", humidity: 70, wind: 6 },
+    "delhi": { temp: 30, description: "sunny", humidity: 45, wind: 5 },
+    "mumbai": { temp: 28, description: "humid", humidity: 75, wind: 4 },
+    "chennai": { temp: 32, description: "hot", humidity: 70, wind: 3 }
+};
+
+searchBtn.addEventListener('click', getWeather);
+cityInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') getWeather();
+});
+
+function getWeather() {
+    const city = cityInput.value.trim().toLowerCase();
+    
+    if (!city) {
+        showError('Please enter a city name');
+        return;
+    }
+
+    weatherInfo.classList.add('hidden');
+    errorMessage.classList.add('hidden');
+
+    setTimeout(() => {
+        if (mockWeatherData[city]) {
+            displayWeather(city, mockWeatherData[city]);
+        } else {
+            showError('City not found. Try: London, Paris, New York, Tokyo, Delhi, Mumbai, Chennai');
+        }
+    }, 500);
+}
+
+function displayWeather(city, data) {
+    const formattedCity = city.split(' ').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+    
+    cityName.textContent = formattedCity;
+    temperature.textContent = `${data.temp}°C`;
+    weatherDesc.textContent = data.description;
+    humidity.textContent = `${data.humidity}%`;
+    windSpeed.textContent = `${data.wind} km/h`;
+    
+    weatherInfo.classList.remove('hidden');
+}
+
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove('hidden');
+}
+
+window.addEventListener('load', () => {
+    cityInput.value = 'London';
+    getWeather();
+});
